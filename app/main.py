@@ -1,22 +1,28 @@
 from flask import Flask, request, jsonify
+from logging.handlers import RotatingFileHandler
 from image_to_text import extract_text_from_image
 import os
 import logging
 
 app = Flask(__name__)
-
-# Configure logging
-logging.basicConfig(filename='api.log', level=logging.INFO)
+# Configure logging with file rotation based on file size
+log_file = 'api.log'
+max_file_size = 10 * 1024 * 1024  # 10 MB
+backup_count = 5
+log_formatter = logging.Formatter('%(asctime)s [%(levelname)s] %(message)s')
+file_handler = RotatingFileHandler(log_file, maxBytes=max_file_size, backupCount=backup_count)
+file_handler.setFormatter(log_formatter)
+file_handler.setLevel(logging.INFO)
+app.logger.addHandler(file_handler)
 
 @app.before_request
 def log_request_info():
-    logging.info(f'Request: {request.method} {request.url}')
+    app.logger.info(f'Request: {request.method} {request.url}')
 
 @app.after_request
 def log_response_info(response):
-    logging.info(f'Response: {response.status_code}')
+    app.logger.info(f'Response: {response.status_code}')
     return response
-
 
 
 @app.route('/', methods=['GET'])

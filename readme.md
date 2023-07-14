@@ -15,3 +15,15 @@ cd app
 python3 main.py
 ```
 
+
+## run test
+```
+cd app
+pytest
+```
+
+## Build production
+
+```
+docker build -t img-to-text .
+```
