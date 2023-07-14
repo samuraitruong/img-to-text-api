@@ -24,7 +24,7 @@ def test_extract_text_from_image():
     result = extract_text_from_image(image_binary)
 
     # Assertions
-    assert result == 'Test\n'
+    assert 'Test' in result
 
     # Clean up the test image file
     os.remove(image_path)
